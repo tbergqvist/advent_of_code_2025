@@ -1,39 +1,29 @@
 (ns day3
   (:require
    [clojure.string :refer [split-lines]]
-   [utils :refer [read-input]]))
-
-(defn char->long [^Character c]
-  (parse-long (str c)))
-
-(defn for-each [s start end]
-  (->> (range start end)
-       (map (fn [i] [i (nth s i)]))))
-
-(defn max-key-first [k & rest]
-  (apply max-key k (reverse rest)))
-  ;(reduce (fn [cur-max val] (if (> (k val) (k cur-max)) val cur-max)) rest))
+   [utils :refer [read-input char->long max-key-first]]))
 
 (defn find-highest [s start end]
-  (->> (for-each s start end)
-       (map #(update % 1 char->long))
+  (->> (range start end)
+       (map (fn [i] [i (char->long (nth s i))]))
        (apply max-key-first second)))
 
-(defn find-highest-number [s]
-  (let [[first-i first-val] (find-highest s 0 (dec (count s)))
-        [_ second-val] (find-highest s (inc first-i) (count s))]
-    (parse-long (str first-val second-val))))
+(defn find-highest-number
+  ([s batteries-left] (find-highest-number s 0 batteries-left))
+  ([s start batteries-left]
+   (if (zero? batteries-left) ""
+       (let [end (- (count s) (dec batteries-left))
+             [i val] (find-highest s start end)]
+         (str val (find-highest-number s (inc i) (dec batteries-left)))))))
 
-(comment
+(defn solve [batteries]
   (->> (read-input 3)
        (split-lines)
-       (map find-highest-number)
-       (reduce +))
+       (map #(find-highest-number % batteries))
+       (map parse-long)
+       (reduce +)))
 
-  (find-highest-number "811384523523527")
-  (max-key-first second [5 4] [7 78] [8 1] [5 78])
-
-  (apply max-key first [[1 2] [4 1]])
-  (char->long \5)
-  (get "12345" 2)
+(comment
+  (solve 2)
+  (solve 12)
   :rcf)

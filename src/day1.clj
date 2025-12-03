@@ -1,13 +1,11 @@
 (ns day1
   (:require
-   [clojure.string :refer [split-lines]]))
+   [clojure.string :refer [split-lines]]
+   [utils :refer [read-input]]))
 
 (defn parse-rotation [s]
   (let [[[direction] num-string] (split-at 1 s)]
     [direction (parse-long (apply str num-string))]))
-
-(defn read-input [day]
-  (slurp (str "./inputs/" day ".txt")))
 
 (defn calc-rotations [prev-value new-value]
   (let [rotations (cond
