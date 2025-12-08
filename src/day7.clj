@@ -1,6 +1,5 @@
 (ns day7
   (:require
-   [clojure.set :refer [union]]
    [clojure.string :refer [split-lines]]
    [utils :refer [read-input is-within-board]]))
 
